@@ -30,13 +30,13 @@
     <link rel="stylesheet" href="../css/owl.carousel.css">
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../js/includeHTML.js">
-    
+
   </head>
   <body>
     <!-- #header -->
     <% include header.html%>
     <!-- start banner Area -->
-    
+
     <section class="relative about-banner">
       <div class="overlay overlay-bg"></div>
       <div class="container">
@@ -50,7 +50,7 @@
         </div>
       </div>
     </section>
-    
+
     <!-- End banner Area -->
 
     <!-- Start post-content Area -->
@@ -112,7 +112,7 @@
               <div class="col-lg-9 col-md-9">
                 <h3 class="mt-20 mb-20"><%=rows[0].package_name%></h3>
                     <div>
-                     조회수:  
+                     조회수:
                       <script>
                         var star = <%=rows[0].package_hit %>;
                         for (var i = 0; i < star; i++) {
@@ -123,6 +123,17 @@
                       </script>
                      <%=rows[0].package_hit %> 회
                     </div><br>
+
+                    <div>패키지 총 평점<%
+                      var average = 0;
+                      for(var i =0; i<star.length;i++){
+                      if(star[i].board_rating!=null) {
+                         average += star[i].board_rating;
+                      }
+                    }
+                      %>
+                    <%=average/(star.length)%>점
+                    </div>
                 <p><h5>특가 상품은 다 모였다~ 저렴한 가격으로 알찬 일정 즐기기!!<h5></p>
                 <div align="right">
                 <select name="validity" id="validity">
@@ -172,8 +183,8 @@
               <div class="single-sidebar-widget ads-widget">
                 <a href="#"><img class="img-fluid" src="../img/blog/ads-banner.jpg" alt=""></a>
               </div>
-              
-              
+
+
             </div>
           </div>
         </div>
@@ -187,17 +198,17 @@
 
       <script src="../js/vendor/jquery-2.2.4.min.js"></script>
 			<script src="../js/popper.min.js"></script>
-			<script src="../js/vendor/bootstrap.min.js"></script>			
-			<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhOdIF3Y9382fqJYt5I_sswSrEw5eihAA"></script>		
- 			<script src="../js/jquery-ui.js"></script>					
-  		<script src="../js/easing.min.js"></script>			
+			<script src="../js/vendor/bootstrap.min.js"></script>
+			<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhOdIF3Y9382fqJYt5I_sswSrEw5eihAA"></script>
+ 			<script src="../js/jquery-ui.js"></script>
+  		<script src="../js/easing.min.js"></script>
 			<script src="../js/hoverIntent.js"></script>
-			<script src="../js/superfish.min.js"></script>	
+			<script src="../js/superfish.min.js"></script>
 			<script src="../js/jquery.ajaxchimp.min.js"></script>
-			<script src="../js/jquery.magnific-popup.min.js"></script>						
-			<script src="../js/jquery.nice-select.min.js"></script>					
-			<script src="../js/owl.carousel.min.js"></script>							
-			<script src="../js/mail-script.js"></script>	
-			<script src="../js/main.js"></script>	
+			<script src="../js/jquery.magnific-popup.min.js"></script>
+			<script src="../js/jquery.nice-select.min.js"></script>
+			<script src="../js/owl.carousel.min.js"></script>
+			<script src="../js/mail-script.js"></script>
+			<script src="../js/main.js"></script>
   </body>
 </html>

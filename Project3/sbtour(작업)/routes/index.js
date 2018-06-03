@@ -10,7 +10,7 @@ var pool = mysql.createPool({
 	host : '127.0.0.1',
 	user : 'root',
 	database: 'sbtour',
-	password: 'toqlc123',
+	password: '123321123',
 	multipleStatements: true
 });
 
@@ -57,7 +57,7 @@ router.get('/', function(req, res, next) {
                 var login = 'unlogin';
             else
 				var login = 'login';
-				
+
 
             res.render('index', { title: 'test', rows: rows, login: login });
             connection.release();
@@ -100,7 +100,7 @@ router.get('/product', function(req, res, next) {
 		var login = 'unlogin';
 	else
 		var login = 'login';
-		
+
 	res.render('product',{title: "product", login:login});
 });
 
@@ -123,14 +123,14 @@ router.get('/insurance', function(req, res, next) {
 
 //-----------------------홍지부분---------------------------
 
-/* GET */ 
+/* GET */
 router.get('/packages/:name', function(req, res, next) {
 	var isKorea = req.params.name;
 	if (req.user == undefined)
 		var login = 'unlogin';
 	else
 		var login = 'login';
-		
+
 
 	if (isKorea === 'korea'){
 		var Korea = "대한민국";
@@ -140,20 +140,20 @@ router.get('/packages/:name', function(req, res, next) {
 	}
 	else if(isKorea === 'china' ){
 		var Korea = "중국"; //ifelse 로 예외처리
-	} 
+	}
 	else if(isKorea === 'japan' ){
 		var Korea = "일본"; //ifelse 로 예외처리
-	} 
+	}
 	else if(isKorea === 'europe' ){
 		var Korea = "유럽"; //ifelse 로 예외처리
-	} 
+	}
 	else if(isKorea === 'hawaii' ){
 		var Korea = "미주"; //ifelse 로 예외처리
-	} 
+	}
 	else if(isKorea === 'guam' ){
 		var Korea = "남태평양"; //ifelse 로 예외처리
-	} 
-	
+	}
+
 
 	pool.getConnection(function (err,connection){
 		if(err) return res.sendStatus(400);
@@ -174,14 +174,14 @@ router.get('/packages/:name', function(req, res, next) {
 router.get('/packages_search', function(req,res,next){
 	var city = req.query.city_name;
 	var start = req.query.start;
-	var end = req.query.end; 
+	var end = req.query.end;
 	var data;
 	var sqlForSelectList;
 	if (req.user == undefined)
             var login = 'unlogin';
     else
 			var login = 'login';
-				
+
 	pool.getConnection(function (err,connection){
 		if(err) return res.sendStatus(400);
 		if(city === ""){
@@ -339,7 +339,7 @@ router.post('/insertcon',  upload.array('img'),  function(req, res, next) {
 
 	pool.getConnection(function(err,connection){
 		var sqlForInsertBoard = "insert into board(customer_id,package_id,board_title,board_start,board_arrive,board_content,board_img,board_rating,board_hit) values(?,?,?,?,?,?,?,?,?)";
-		
+
 		for(var i = 0; i< filelength; i++){
 			console.log(filelength);
 			filename = imageUpload(req.files[i]);
@@ -365,7 +365,7 @@ router.get('/contents/:idx', function(req, res, next) {
             var login = 'unlogin';
     else
 			var login = 'login';
-			
+
 	var idx = req.params.idx;
 	pool.getConnection(function (err,connection){
 		if(err) return res.sendStatus(400);
@@ -445,7 +445,7 @@ passport.use(new LocalStrategy({
                     console.log('해당 유저가 없습니다');
                     return done(false, null, req.flash('login_msg', '아이디가 존재하지 않습니다.'));
                 } else {
-                    if (req.body.user_type == 'customer') { //소비자 
+                    if (req.body.user_type == 'customer') { //소비자
                         if (user_passwd != result[0].customer_passwd) {
                             console.log('패스워드가 일치하지 않습니다', req.flash('login_msg', '패스워드가 일치하지 않습니다'));
                             return done(false, null);
@@ -511,7 +511,7 @@ router.post('/joinForm', function(req, res, next) {
 
 /* GET 로그인 */
 router.get('/login', function(req, res, next) {
-	
+
 	if (req.user == undefined)
             var login = 'unlogin';
     else{
@@ -536,7 +536,7 @@ router.get('/logout', function(req, res) {
 		var login = 'login';
 		req.logout();
 	}
-	res.redirect('/');		
+	res.redirect('/');
 });
 
 /* GET 회원가입 */
@@ -570,19 +570,22 @@ router.get('/product/:package_id', function (req, res, next) {
 			var sqlForSelectList = "select * from package where package_id = ?;" +
 				"select * from customer where customer_id = ?;" +
 				"select * from seller where seller_id in (select seller_id from package where package_id = ? );"+
-				"update package set package_hit = package_hit+1 where package_id = ?;";
+				"update package set package_hit = package_hit+1 where package_id = ?;"+
+				"select  * from board where package_id=?;";
 
-			connection.query(sqlForSelectList, [package, customer_id, package,package], function (err, rows) {
+			connection.query(sqlForSelectList, [package, customer_id, package,package,package], function (err, rows) {
 				if (err) console.error("err1 : " + err);
 				console.log("package_id : " + JSON.stringify(package));
 				console.log("rows[0] : " + JSON.stringify(rows[0]));
 				console.log("rows[1] : " + JSON.stringify(rows[1]));
 				console.log("rows[2] : " + JSON.stringify(rows[2]));
+				console.log("rows[3] : " + JSON.stringify(rows[4]));
 				res.render('product', {
 					title: 'package_id',
 					rows: rows[0],
 					customer: rows[1],
 					seller: rows[2],
+					star : rows[4],
 					login:login
 				});
 				connection.release();
@@ -591,15 +594,15 @@ router.get('/product/:package_id', function (req, res, next) {
 		});
 	}
 });
-function formatDate(date) { 
-	var d = new Date(date), 
-	month = '' + (d.getMonth() + 1), 
-	day = '' + d.getDate(), 
-	year = d.getFullYear(); 
-	if (month.length < 2) 
-	month = '0' + month; 
-	if (day.length < 2) day = '0' + day; 
-	return [year, month, day].join('/'); 
+function formatDate(date) {
+	var d = new Date(date),
+	month = '' + (d.getMonth() + 1),
+	day = '' + d.getDate(),
+	year = d.getFullYear();
+	if (month.length < 2)
+	month = '0' + month;
+	if (day.length < 2) day = '0' + day;
+	return [year, month, day].join('/');
 }
 
 router.post('/product/:package_id', function (req, res, next) {
@@ -620,7 +623,7 @@ router.post('/product/:package_id', function (req, res, next) {
 	var data2 = [customer_id, package_id, pay_id, reserve_date, reserve_start, reserve_arrive, reserve_people, reserve_price, reserve_status];
 	console.log(data1);
 	console.log(data2);
-	
+
 
 	pool.getConnection(function (err, connection) {
 		var sqlForInsertBoard1 = "INSERT INTO payment(pay_id, pay_option, pay_status, reserve_id) values(?,0,0,?)";
@@ -652,7 +655,7 @@ router.get('/reservation/:user_id', function (req, res, next) {
 	console.log(user_id);
 	pool.getConnection(function (err, connection) {
 		if (err) return res.sendStatus(400);
-		var sqlForSelectList = 
+		var sqlForSelectList =
 		"select * from reservation where customer_id = ?;"+
 		"select * from package where package_id in(select package_id from reservation where customer_id = ? );";
 		connection.query(sqlForSelectList, [user_id, user_id], function (err, rows) {
@@ -678,7 +681,7 @@ router.get('/profile_get', function (req, res, next) {
 	var type;
 	var sqlForSelectList1;
 	var render_;
-	
+
 	if (req.user == undefined){
 		var login = 'unlogin';
 		console.log('로그인 정보가 없습니다. ');
@@ -689,7 +692,7 @@ router.get('/profile_get', function (req, res, next) {
 		user_id  = req.user.user_id;
 		type = req.user.user_type;
 	}
-		
+
 
 	if(type === "seller"){
 		sqlForSelectList1 = "select * from seller where seller_id = ?;"
@@ -716,8 +719,8 @@ router.get('/sale_product', function(req, res, next) { //로그인한 상태에�
 		var login = 'unlogin';
 	else{
 		var login = 'login';
-	}	
-	var sql = "select * from city;" 
+	}
+	var sql = "select * from city;"
 			+"select * from country;";
 	pool.getConnection(function (err,connection){
 		if(err) return res.sendStatus(400);
@@ -759,31 +762,31 @@ router.post('/sale_product', upload.array('img'), function(req, res, next) {
 	var package_closed = req.body.package_closed;
 
 	var data1 = [country_name, city_name] ;
-	
+
     var filelength = req.files.length;
 	var uploadcnt = 0;
-	
-	
+
+
     pool.getConnection(function(err, connection) {
-		var sqlforInsertTour = 
+		var sqlforInsertTour =
 					"select tour_id from tour where country_id in (select country_id from country where country_name = ? ) and  city_id in (select city_id from city where city_name=?) ORDER BY tour_id LIMIT 1";
 		 var sqlForInsertBoard = "insert into package(package_id, seller_id, tour_id, package_name, package_explanation, package_img ,package_start, package_arrive, package_term, package_validity, package_cost, package_closed, package_hit) values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
-		
-		
+
+
 		 for(var i = 0; i< filelength; i++){
 			console.log(filelength);
 			filename = imageUpload(req.files[i]);
 			uploadcnt +=1;
 			console.log("filename" + JSON.stringify(filename));
 			console.log("uploadcnt" + JSON.stringify(uploadcnt));
-		
+
 			if(uploadcnt == filelength ){
 				 connection.query(sqlforInsertTour,  data1 , function(err, tour_id) {
 				if (err) console.error("err: " + err);
 				console.log("tour_id: " + JSON.stringify(tour_id));
 				var datas2 = [package_id, user_id, tour_id[0].tour_id, package_name, package_explan, filename ,start, end, package_term, package_validity, package_cost, package_closed, '0'];
-				console.log("datas2: " + JSON.stringify(datas2));	
-					
+				console.log("datas2: " + JSON.stringify(datas2));
+
 					connection.query(sqlForInsertBoard, datas2, function(err, rows) {
       	    		if (err) console.error("err: " + err);
         	   		 console.log("rows: " + JSON.stringify(rows));
@@ -809,7 +812,7 @@ router.get('/reservation_my', function (req, res, next) {
 	console.log(user_id);
 	pool.getConnection(function (err, connection) {
 		if (err) return res.sendStatus(400);
-		var sqlForSelectList = 
+		var sqlForSelectList =
 		"select * from reservation where customer_id = ?;"+
 		"select * from package where package_id in(select package_id from reservation where customer_id = ? );";
 		connection.query(sqlForSelectList, [user_id, user_id], function (err, rows) {
